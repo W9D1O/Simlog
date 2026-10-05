@@ -1,0 +1,42 @@
+#ifndef GATES_H
+#define GATES_H
+#include <stdbool.h>
+
+typedef enum {
+    NOT,
+    OR,
+    AND,
+    XOR,
+    NOR,
+    NAND,
+    XNOR,
+} gate_type; //Buscar un mejor nombre, este se puede confundir con gate_t.
+
+
+typedef struct {
+    bool *input;
+    bool *output;
+    gate_type type;
+} logic_gate;
+
+
+logic_gate* generate_gate(gate_type type);
+
+void and_gate(logic_gate *gate);
+
+void not_gate(logic_gate *gate);
+
+void or_gate(logic_gate *gate);
+
+void xor_gate(logic_gate *gate);
+
+void nor_gate(logic_gate *gate);
+
+void xnor_gate(logic_gate *gate);
+
+void nand_gate(logic_gate *gate);
+
+int set_input(logic_gate *gate, bool input, int nInput);
+
+void update_output(logic_gate *gate);
+#endif

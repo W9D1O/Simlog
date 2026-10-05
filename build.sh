@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cc main.c -o logic
+cc main.c gates.c -o logic
