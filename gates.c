@@ -3,37 +3,6 @@
 #include <stdio.h>
 
 
-/*Recibe un tipo y genera la compuerta logica estandar*/
-logic_gate* generate_gate(gate_type type)
-{
-    logic_gate *gate = (logic_gate*) malloc(sizeof(logic_gate));
-    if (gate == NULL) {
-        fprintf(stderr,"ERROR MALLOC: No se pudo reservar memoria\n", __LINE__, __FILE__);
-        exit(-1);
-    }
-    if (gate != NULL) {
-        if (type == NOT) {
-            gate->input = (bool*) malloc(sizeof(bool));
-            gate->output = (bool*) malloc(sizeof(bool));
-            gate->nInput = 1;
-            *gate->input = false;
-            //TODO: estas cosas de C me resultan desagradables, averiguar cual es la manera correcta de hacerlo.
-            *gate->output = true;
-            gate->type = type;
-        } else {
-            gate->input = (bool*) malloc(2 * sizeof(bool));
-            gate->output = (bool*) malloc(sizeof(bool));
-            gate->nInput = 2;
-            gate->input[0] = false;
-            gate->input[1] = false;
-            gate->output[0] = false;
-            gate->type = type;
-        }
-    }
-}
-
-
-
 //TODO: Pensar como si las compuertas binarias van a aceptar mas de dos input.
 void and_gate(logic_gate *gate)
 {
@@ -83,17 +52,8 @@ void nand_gate(logic_gate *gate)
 }
 
 
-int set_input(logic_gate *gate, bool input, int nInput)
-{
-    if (nInput > 0 && nInput <= gate->nInput) gate->input[nInput - 1] = input;
-    else {
-        fprintf(stderr, "ERROR: El numero de entradas de la compuerta es menor del que se intenta asignar\n",
-                __LINE__,__FILE__);
-        return -1;
-    }
-    return 0;
-}
 
+/*Esta en este lugar para poder generar una salida logica al cregar una compuerta*/
 void update_output(logic_gate *gate)
 {
     switch (gate->type) {
@@ -120,6 +80,57 @@ void update_output(logic_gate *gate)
             break;
     }
 }
+
+
+/*Recibe un tipo y genera la compuerta logica estandar*/
+logic_gate* generate_gate(gate_type type)
+{
+    logic_gate *gate = (logic_gate*) malloc(sizeof(logic_gate));
+    if (gate == NULL) {
+        fprintf(stderr,"ERROR MALLOC: No se pudo reservar memoria\n", __LINE__, __FILE__);
+        exit(-1);
+    }
+    if (gate != NULL) {
+        if (type == NOT) {
+            gate->input = (bool*) malloc(sizeof(bool));
+            gate->output = (bool*) malloc(sizeof(bool));
+            gate->nInput = 1;
+            *gate->input = false;
+            //TODO: estas cosas de C me resultan desagradables, averiguar cual es la manera correcta de hacerlo.
+            *gate->output = true;
+            gate->type = type;
+        } else {
+            gate->input = (bool*) malloc(2 * sizeof(bool));
+            gate->output = (bool*) malloc(sizeof(bool));
+            gate->nInput = 2;
+            gate->input[0] = false;
+            gate->input[1] = false;
+            gate->output[0] = false;
+            gate->type = type;
+            //Deja seteado el output con su valor correspondiente.
+            update_output(gate);
+        }
+    }
+    return gate;
+}
+
+
+
+
+
+int set_input(logic_gate *gate, bool input, int nInput)
+{
+    int pos = nInput - 1;
+    if (nInput >= 0 && pos < gate->nInput) gate->input[pos] = input;
+    else {
+        fprintf(stderr, "ERROR: El numero de entradas de la compuerta es menor del que se intenta asignar\n",
+                __LINE__,__FILE__);
+        return -1;
+    }
+    return 0;
+}
+
+
 
 void multiplex(bool *io, logic_gate *gate, int nInput)
 {
