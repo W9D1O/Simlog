@@ -15,16 +15,18 @@ logic_gate* generate_gate(gate_type type)
         if (type == NOT) {
             gate->input = (bool*) malloc(sizeof(bool));
             gate->output = (bool*) malloc(sizeof(bool));
-            gate->input = false;
+            gate->nInput = 1;
+            *gate->input = false;
             //TODO: estas cosas de C me resultan desagradables, averiguar cual es la manera correcta de hacerlo.
-            gate->output[0] = true;
+            *gate->output = true;
             gate->type = type;
         } else {
             gate->input = (bool*) malloc(2 * sizeof(bool));
             gate->output = (bool*) malloc(sizeof(bool));
+            gate->nInput = 2;
             gate->input[0] = false;
             gate->input[1] = false;
-            gate->output[0] = true;
+            gate->output[0] = false;
             gate->type = type;
         }
     }
@@ -36,49 +38,55 @@ logic_gate* generate_gate(gate_type type)
 void and_gate(logic_gate *gate)
 {
     *gate->output = gate->input[0] & gate->input[1];
+    printf("%d\n",*gate->output);
 }
 
 
 void not_gate(logic_gate *gate)
 {
-    *gate->output = ~gate->input[0];
+    *gate->output = !gate->input[0];
+
 }
 
 
 void or_gate(logic_gate *gate)
 {
     *gate->output = gate->input[0] | gate->input[1];
+
 }
 
 
 void xor_gate(logic_gate *gate)
 {
     *gate->output = gate->input[0] ^ gate->input[1];
+
 }
 
 
 void nor_gate(logic_gate *gate)
 {
-    *gate->output = ~(gate->input[0] | gate->input[1]);
+    *gate->output = !(gate->input[0] | gate->input[1]);
+
 }
 
 
 void xnor_gate(logic_gate *gate)
 {
-    *gate->output = ~(gate->input[0] | gate->input[1]);
+    *gate->output = !(gate->input[0] ^ gate->input[1]);
+
 }
 
 
 void nand_gate(logic_gate *gate)
 {
-    *gate->output = ~(gate->input[0] & gate->input[1]);
+    *gate->output = !(gate->input[0] & gate->input[1]);
+
 }
 
 
 int set_input(logic_gate *gate, bool input, int nInput)
 {
-    int len = sizeof(gate->input) / sizeof(gate->input[0]);
-    if (nInput >= 0 && nInput < len) gate->input[nInput];
+    if (nInput > 0 && nInput <= gate->nInput) gate->input[nInput - 1] = input;
     else {
         fprintf(stderr, "ERROR: El numero de entradas de la compuerta es menor del que se intenta asignar\n",
                 __LINE__,__FILE__);
@@ -111,5 +119,20 @@ void update_output(logic_gate *gate)
         case XNOR:
             xnor_gate(gate);
             break;
+    }
+}
+
+void update_gate(logic_gate *gate, bool input, int nInput)
+{
+    set_input(gate,input,nInput);
+    update_output(gate);
+}
+
+void free_logic_gate(logic_gate *gate)
+{
+    if (gate != NULL) {
+        free(gate->output);
+        free(gate->input);
+        free(gate);
     }
 }

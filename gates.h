@@ -16,6 +16,7 @@ typedef enum {
 typedef struct {
     bool *input;
     bool *output;
+    int nInput; //Agregamos a cantidad de input, porque c no me deja salar la longitud de un array dentro de una funcion.
     gate_type type;
 } logic_gate;
 
@@ -39,4 +40,8 @@ void nand_gate(logic_gate *gate);
 int set_input(logic_gate *gate, bool input, int nInput);
 
 void update_output(logic_gate *gate);
+
+void update_gate(logic_gate *gate, bool input, int nInput);
+
+void free_logic_gate(logic_gate *gate);
 #endif
