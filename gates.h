@@ -44,4 +44,6 @@ void update_output(logic_gate *gate);
 void update_gate(logic_gate *gate, bool input, int nInput);
 
 void free_logic_gate(logic_gate *gate);
+
+void multiplex(bool *io, logic_gate *gate, int nInput);
 #endif

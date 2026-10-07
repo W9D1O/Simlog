@@ -53,7 +53,7 @@ void nand_gate(logic_gate *gate)
 
 
 
-/*Esta en este lugar para poder generar una salida logica al cregar una compuerta*/
+/*Esta en este lugar para poder generar una salida logica al crear una compuerta*/
 void update_output(logic_gate *gate)
 {
     switch (gate->type) {
@@ -111,13 +111,15 @@ logic_gate* generate_gate(gate_type type)
             update_output(gate);
         }
     }
+    /*OJO: Parece que si te olvidas el return C dice algo como 'Tranqui, te doy el puntero igual'
+      pero si llamas otra funcion dentro ahi se se acuerda que no hiciste el  return.*/
     return gate;
 }
 
 
 
 
-
+/*Setea un input con un valor*/
 int set_input(logic_gate *gate, bool input, int nInput)
 {
     int pos = nInput - 1;
@@ -131,7 +133,10 @@ int set_input(logic_gate *gate, bool input, int nInput)
 }
 
 
-
+/*Recibe un puntero y numero de input, si el input tiene un valor
+libera la memoria y compia la direccion de memoria. Si se intenta
+copiar la direccion del mismo input se ignora. Si el input ya se encuentra en NULL
+simplemente se realiza la copia.*/
 void multiplex(bool *io, logic_gate *gate, int nInput)
 {
     int p = nInput - 1;
@@ -148,12 +153,16 @@ void multiplex(bool *io, logic_gate *gate, int nInput)
     }
 }
 
+
+/*Encapsula set_input y update_output*/
 void update_gate(logic_gate *gate, bool input, int nInput)
 {
     set_input(gate,input,nInput);
     update_output(gate);
 }
 
+
+/*Libera la memoria reservada*/
 void free_logic_gate(logic_gate *gate)
 {
     if (gate != NULL) {
