@@ -38,7 +38,6 @@ logic_gate* generate_gate(gate_type type)
 void and_gate(logic_gate *gate)
 {
     *gate->output = gate->input[0] & gate->input[1];
-    printf("%d\n",*gate->output);
 }
 
 
@@ -119,6 +118,22 @@ void update_output(logic_gate *gate)
         case XNOR:
             xnor_gate(gate);
             break;
+    }
+}
+
+void multiplex(bool *io, logic_gate *gate, int nInput)
+{
+    int p = nInput - 1;
+    if (nInput > 0 && nInput <= gate->nInput) {
+        if (gate->input + p != NULL && gate->input + p != io) {
+            free(gate->input + p);
+            gate->input[p] = io;
+        } else if (gate->input + p == NULL) gate->input[p] = io;
+
+    } else {
+        fprintf(stderr,"MULTIPLEX ERROR: Numero de entrada invalido. "
+                   "El numero de entrada debe ser mayor a cero y menor o igual a la de la compuerta.\n",__LINE__);
+        exit(-1);
     }
 }
 
