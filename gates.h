@@ -1,6 +1,8 @@
 #ifndef GATES_H
 #define GATES_H
-#include <stdbool.h>
+
+#define TRUE  1
+#define FALSE 0
 
 typedef enum {
     NOT,
@@ -14,8 +16,8 @@ typedef enum {
 
 
 typedef struct {
-    bool *input;
-    bool *output;
+    int **input;
+    int *output;
     int nInput; //Agregamos a cantidad de input, porque c no me deja salar la longitud de un array dentro de una funcion.
     gate_type type;
 } logic_gate;
@@ -37,13 +39,13 @@ void xnor_gate(logic_gate *gate);
 
 void nand_gate(logic_gate *gate);
 
-int set_input(logic_gate *gate, bool input, int nInput);
+int set_input(logic_gate *gate, int input, int nInput);
 
 void update_output(logic_gate *gate);
 
-void update_gate(logic_gate *gate, bool input, int nInput);
+void update_gate(logic_gate *gate, int input, int nInput);
 
 void free_logic_gate(logic_gate *gate);
 
-void multiplex(bool *io, logic_gate *gate, int nInput);
+void multiplex(int *io, logic_gate *gate, int nInput);
 #endif

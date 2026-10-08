@@ -50,7 +50,7 @@ void del_gate(logic_circ *circuit, int pos)
 {
     int c = circuit->count;
     if (circuit->gates[pos] != NULL && pos >= 0 && pos < c) {
-        free(circuit->gates[pos]);
+        free_logic_gate(circuit->gates[pos]);
         /*Estamos considerando lo siguiente: Si el array tiene un solo elemento o si la posicion que
          se quiere eliminar es la ultima posicion no va a entrar en el for pero eso tambien quiere decir
         que no es necesario hacer desplazamientos, solo se debe disminuir el contador.*/
@@ -66,7 +66,7 @@ int main()
 {
     logic_circ lcNot;
     init_circuit(&lcNot);
-    logic_gate *not = generate_gate(NOT);
+    /* logic_gate *not = generate_gate(NOT); */
     printf("Arrancamos con esto!!!");
     return 0;
 }

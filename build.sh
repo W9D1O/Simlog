@@ -1,5 +1,5 @@
 #!/bin/bash
 
 
-cc test_gate.c  gates.c -o test_gate
-cc main.c gates.c -o logic
+cc test_gate.c  gates.c -ggdb -o test_gate
+cc main.c gates.c -Wall -Wextra -o logic
