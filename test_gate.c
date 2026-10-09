@@ -71,17 +71,17 @@ void test_xor(logic_gate *xor)
 
 void test_nand(logic_gate *nand)
 {
-    printf("TEST NAND: 0/3");
+    printf("TEST NAND: 0/3\n");
     update_gate(nand,FALSE,1);
     update_gate(nand,FALSE,2);
-    assert(*nand->output && "NAND: Recibio false en ambas entradas y retorno false");
-    printf("TEST NAND: 1/3");
+    assert(*nand->output && "NAND: Recibio false en ambas entradas y retorno false\n");
+    printf("TEST NAND: 1/3\n");
     update_gate(nand,TRUE,2);
-    assert(*nand->output &&  "NAND: Recibio true en una de sus  entradas y retorno false");
-    printf("TEST NAND: 2/3");
+    assert(*nand->output &&  "NAND: Recibio true en una de sus  entradas y retorno false\n");
+    printf("TEST NAND: 2/3\n");
     update_gate(nand,TRUE,1);
-    assert(!(*nand->output) && "NAND: Recibio true en ambas  entradas y retorno true");
-    printf("TEST NAND: 3/3");
+    assert(!(*nand->output) && "NAND: Recibio true en ambas  entradas y retorno true\n");
+    printf("TEST NAND: 3/3\n");
 
 
 }
@@ -90,34 +90,34 @@ void test_nand(logic_gate *nand)
 
 void test_nor(logic_gate *nor)
 {
-    printf("TEST NOR: 0/3");
+    printf("TEST NOR: 0/3\n");
     update_gate(nor,FALSE,1);
     update_gate(nor,FALSE,2);
-    assert(*nor->output && "NOR: Recibio false en ambas entradas y retorno false");
-    printf("TEST NOR: 1/3");
+    assert(*nor->output && "NOR: Recibio false en ambas entradas y retorno false\n");
+    printf("TEST NOR: 1/3\n");
     update_gate(nor,TRUE,2);
-    assert(!(*nor->output) && "NOR: Recibio true en una de sus  entradas y retorno true");
+    assert(!(*nor->output) && "NOR: Recibio true en una de sus  entradas y retorno true\n");
     update_gate(nor,TRUE,1);
-    printf("TEST NOR: 2/3");
-    assert(!(*nor->output) && "NOR: Recibio true en ambas  entradas y retorno true");
-    printf("TEST NOR: 3/3");
+    printf("TEST NOR: 2/3\n");
+    assert(!(*nor->output) && "NOR: Recibio true en ambas  entradas y retorno true\n");
+    printf("TEST NOR: 3/3\n");
 
 }
 
 
 void test_xnor(logic_gate *xnor)
 {
-    printf("TEST XNOR: 0/3");
+    printf("TEST XNOR: 0/3\n");
     update_gate(xnor,FALSE,1);
     update_gate(xnor,FALSE,2);
-    assert(*xnor->output &&  "XNOR: Recibio false en ambas entradas y retorno false");
-    printf("TEST XNOR: 1/3");
+    assert(*xnor->output &&  "XNOR: Recibio false en ambas entradas y retorno false\n");
+    printf("TEST XNOR: 1/3\n");
     update_gate(xnor,TRUE,2);
-    assert(!(*xnor->output) && "XNOR: Recibio true en una de sus  entradas y retorno true");
-    printf("TEST XNOR: 2/3");
+    assert(!(*xnor->output) && "XNOR: Recibio true en una de sus  entradas y retorno true\n");
+    printf("TEST XNOR: 2/3\n");
     update_gate(xnor,TRUE,1);
-    assert(*xnor->output && "XNOR: Recibio true en ambas  entradas y retorno false");
-    printf("TEST XNOR: 3/3");
+    assert(*xnor->output && "XNOR: Recibio true en ambas  entradas y retorno false\n");
+    printf("TEST XNOR: 3/3\n");
 }
 
 /*Es mejorable pero por el momento basta.*/
