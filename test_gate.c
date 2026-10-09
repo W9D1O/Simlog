@@ -6,10 +6,10 @@
 void test_not(logic_gate *not)
 {
 
-    printf("TEST NOT: 0/2");
+    printf("TEST NOT: 0/2\n");
     update_gate(not,FALSE,1);
     assert(*not->output && "NOT: Recibio false y retorno false\n");
-    printf("TEST NOT: 1/2");
+    printf("TEST NOT: 1/2\n");
     update_gate(not,TRUE,1);
     assert(!(*not->output) && "NOT: Recibio true y retorno true\n");
     printf("TEST NOT: 2/2\n");
@@ -23,7 +23,7 @@ void test_and(logic_gate *and)
     update_gate(and,FALSE,1);
     update_gate(and,FALSE,2);
     assert(!(*and->output) && "AND: Recibio false en ambas entradas y retorno true\n");
-    printf("TEST AND: 1/3");
+    printf("TEST AND: 1/3\n");
     update_gate(and,TRUE,2);
     assert(!(*and->output) && "AND: Recibio true en una de sus  entradas y retorno true\n");
     printf("TEST AND: 2/3\n");

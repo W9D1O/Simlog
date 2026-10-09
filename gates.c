@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+//TODO: Posiblemente dejes de existir.
 int get_bit(int n)
 {
     /* Vamos a explicar esto: tengo varias operaciones binaria
@@ -14,8 +15,8 @@ int get_bit(int n)
 //TODO: Pensar como si las compuertas binarias van a aceptar mas de dos input.
 void and_gate(logic_gate *gate)
 {
-    if (gate->input[0] != NULL && gate->input[1] != NULL) {
-        int byte = *gate->input[0] & *gate->input[1];
+    if (gate->input.input[0] != NULL && gate->input.input[1] != NULL) {
+        int byte = *gate->input.input[0] & *gate->input.input[1];
         *gate->output = get_bit(byte);
     }
 }
@@ -23,8 +24,8 @@ void and_gate(logic_gate *gate)
 
 void not_gate(logic_gate *gate)
 {
-    if (gate->input[0] != NULL) {
-        int byte = ~(*gate->input[0]);
+    if (gate->input.input[0] != NULL) {
+        int byte = !(*gate->input.input[0]);
         *gate->output = get_bit(byte);
     }
 }
@@ -32,8 +33,8 @@ void not_gate(logic_gate *gate)
 
 void or_gate(logic_gate *gate)
 {
-    if(gate->input[0] != NULL && gate->input[1] != NULL) {
-        int byte = *gate->input[0] | *gate->input[1];
+    if(gate->input.input[0] != NULL && gate->input.input[1] != NULL) {
+        int byte = *gate->input.input[0] | *gate->input.input[1];
         *gate->output = get_bit(byte);
     }
 }
@@ -41,16 +42,18 @@ void or_gate(logic_gate *gate)
 
 void xor_gate(logic_gate *gate)
 {
-    if (gate->input[0] != NULL && gate->input[1] != NULL) {
-        int byte = *gate->input[0] ^ *gate->input[1];
-    }    *gate->output = get_bit(byte);
+
+    if (gate->input.input[0] != NULL && gate->input.input[1] != NULL) {
+        int byte = *gate->input.input[0] ^ *gate->input.input[1];
+        *gate->output = get_bit(byte);
+    }
 }
 
 
 void nor_gate(logic_gate *gate)
 {
-    if (gate->input[0] != NULL && gate->input[1] != NULL) {
-        int byte = ~(*gate->input[0] | *gate->input[1]);
+    if (gate->input.input[0] != NULL && gate->input.input[1] != NULL) {
+        int byte = !(*gate->input.input[0] | *gate->input.input[1]);
         *gate->output = get_bit(byte);
     }
 }
@@ -58,8 +61,8 @@ void nor_gate(logic_gate *gate)
 
 void xnor_gate(logic_gate *gate)
 {
-    if (gate->input[0] != NULL && gate->input[1] != NULL) {
-        int byte = ~(*gate->input[0] ^ *gate->input[1]);
+    if (gate->input.input[0] != NULL && gate->input.input[1] != NULL) {
+        int byte = !(*gate->input.input[0] ^ *gate->input.input[1]);
         *gate->output = get_bit(byte);
     }
 }
@@ -67,9 +70,10 @@ void xnor_gate(logic_gate *gate)
 
 void nand_gate(logic_gate *gate)
 {
-    int byte = ~(*gate->input[0] & *gate->input[1]);
-    *gate->output = get_bit(byte);
-
+    if (gate->input.input[0] != NULL && gate->input.input[1] != NULL) {
+        int byte = !(*gate->input.input[0] & *gate->input.input[1]);
+        *gate->output = get_bit(byte);
+    }
 }
 
 
@@ -102,6 +106,17 @@ void update_output(logic_gate *gate)
     }
 }
 
+/* No deberias asignar la la compuerta NOT un max
+   superior a 1 */
+input_gate init_input_gate(int max)
+{
+    input_gate input;
+    input.input = (int**) malloc(1 *sizeof(int*));
+    input.max = max;
+    input.count = 0;
+    return input;
+}
+
 
 /*Recibe un tipo y genera la compuerta logica estandar*/
 logic_gate* generate_gate(gate_type type)
@@ -113,14 +128,12 @@ logic_gate* generate_gate(gate_type type)
     }
     if (gate != NULL) {
         if (type == NOT) {
-            gate->input = (int**) malloc(1 *sizeof(int *));
+            gate->input = init_input_gate(1);
             gate->output = (int*) malloc(sizeof(int));
-            gate->nInput = 1;
             gate->type = type;
         } else {
-            gate->input = (int**) malloc(2 * sizeof(int *));
+            gate->input = init_input_gate(MAX_INPUT);
             gate->output = (int*) malloc(sizeof(int));
-            gate->nInput = 2;
             gate->type = type;
         }
     }
@@ -129,25 +142,37 @@ logic_gate* generate_gate(gate_type type)
     return gate;
 }
 
+/* Como los nombre son confusos vamos a explicar:
+    la idea es que set_input setea un valor a un input n
+ ahora si este no existe, es decir esta en NULL, add_input
+ genera la memoria, acumenta el contador de input y setea el valor. */
+void add_input(input_gate *input, int in, int pos)
+{
+    input->input[pos] = (int*) malloc(sizeof(int));
+    *input->input[pos] = in;
+    input->count++;
+}
 
-
-
-/*Setea un input con un valor*/
+/*Setea un input con un valor. Como estoy haciendo quilombo
+ voy a hacer otra aclaracion. set solo copia un valor. Si el array
+ ya esta completo llama a realloc, si la pocicion esta en NULL llama a add_input*/
 int set_input(logic_gate *gate, int input, int nInput)
 {
     int pos = nInput - 1;
-    if (nInput >= 0 && pos < gate->nInput) {
-        if (gate->input[pos] != NULL) *gate->input[pos] = input;
-        else {
-            gate->input[pos] = (int*) malloc(sizeof(int));
-            *gate->input[pos] = input;
-        }
-    }
-    else {
-        fprintf(stderr, "ERROR: El numero de entradas de la compuerta es menor del que se intenta asignar %d %s\n",
-                __LINE__,__FILE__);
+
+    if (pos < 0 || (pos >= gate->input.max && gate->input.max > gate->input.count)) {
+        fprintf(stderr, "ERROR SET INPUT: Posicion invalida. %s %d\n", __FILE__, __LINE__);
+        return -1;
+    } else if (gate->input.count == gate->input.max && gate->type == NOT && pos > 0) {
+        fprintf(stderr,"ERROR SET INPUT: La compuerta NOT no debe tener mas de una entrada. %s %d\n", __FILE__,__LINE__);
         return -1;
     }
+
+    if (pos < gate->input.max) {
+        if (gate->input.input[pos] != NULL) *gate->input.input[pos] = input;
+        else  add_input(&gate->input,input,pos);
+
+    } else ;//TODO: Implementar realloc_input
     return 0;
 }
 
@@ -160,17 +185,21 @@ void multiplex(int *io, logic_gate *gate, int nInput)
 {
 
     int p = nInput - 1;
-    if (nInput > 0 && nInput <= gate->nInput) {
-        if (gate->input != NULL && gate->input[p] != io) {
-            gate->input[p] = io;
-        } else if (gate->input == NULL) {
+    if (nInput > 0 && nInput <= gate->input.count) {
+        if (gate->input.input != NULL && gate->input.input[p] != io) {
+            gate->input.input[p] = io;
+        } else if (gate->input.input == NULL) {
             //TODO: Considerar la idea de usar unior para generar Input.
             if (gate->type == NOT) {
-                gate->input = (int**) malloc(sizeof(int *));
-                gate->input[p] = io;
+                gate->input.input = (int**) malloc(sizeof(int *));
+                gate->input.max = 1;
+                gate->input.count = 1;
+                gate->input.input[p] = io;
             } else {
-                gate->input = (int**) malloc(2 * sizeof(int));
-                gate->input[p] = io;
+                gate->input.input = (int**) malloc(MAX_INPUT * sizeof(int));
+                gate->input.input[p] = io;
+                gate->input.max = MAX_INPUT;
+                gate->input.count = 1;
             }
         }
 
@@ -195,7 +224,7 @@ void free_logic_gate(logic_gate *gate)
 {
     if (gate != NULL) {
         free(gate->output);
-        free(gate->input);
+        free(gate->input.input);
         free(gate);
     }
 }
