@@ -4,6 +4,8 @@
 #define TRUE  1
 #define FALSE 0
 
+#define MAX_INPUT 8
+
 typedef enum {
     NOT,
     OR,
@@ -14,11 +16,15 @@ typedef enum {
     XNOR,
 } gate_type; //Buscar un mejor nombre, este se puede confundir con gate_t.
 
-
 typedef struct {
     int **input;
+    int max;
+    int count;
+} input_gate;
+
+typedef struct {
+    input_gate input;
     int *output;
-    int nInput; //Agregamos a cantidad de input, porque c no me deja salar la longitud de un array dentro de una funcion.
     gate_type type;
 } logic_gate;
 
