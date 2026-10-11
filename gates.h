@@ -54,4 +54,8 @@ void update_gate(logic_gate *gate, int input, int nInput);
 void free_logic_gate(logic_gate *gate);
 
 void multiplex(int *io, logic_gate *gate, int nInput);
+
+input_gate init_input_gate(int max);
+
+void add_input(input_gate *input, int in, int pos);
 #endif

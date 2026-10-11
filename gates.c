@@ -190,6 +190,7 @@ void multiplex(int *io, logic_gate *gate, int nInput)
             gate->input.input[p] = io;
         } else if (gate->input.input == NULL) {
             //TODO: Considerar la idea de usar unior para generar Input.
+           
             if (gate->type == NOT) {
                 gate->input.input = (int**) malloc(sizeof(int *));
                 gate->input.max = 1;
